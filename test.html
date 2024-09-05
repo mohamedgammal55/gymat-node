@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Test</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+</head>
+<body>
+<h1>Socket.io Test</h1>
+
+<div id="messages">
+    <!-- Messages will be displayed here -->
+</div>
+
+<form id="messageForm">
+    <input type="text" id="messageInput" placeholder="Enter your message">
+    <button type="submit">Send</button>
+</form>
+
+<script>
+    // Connect to the server
+    const socket = io('http://192.168.1.28:3000/');
+    socket.on('connect', () => {
+        console.log('Connected to server');
+    });
+
+    // Emit the message to the server
+    socket.emit('gimat_user_join', 4);
+
+    // Listen for incoming messages from the server
+    socket.on('gimat_one_user_receive_data', function (data) {
+        console.log(data)
+    });
+    // // Emit the message to the server
+    // socket.emit('gimat_market_join', 1);
+    //
+    // // Listen for incoming messages from the server
+    // socket.on('gimat_one_market_receive_data', function (data) {
+    //     console.log(data)
+    // });
+</script>
+</body>
+</html>

@@ -44,7 +44,7 @@ app.get('/', function (req, res) {
     });
 });
 
-http.listen(port, /*'192.168.1.21',*/ () => {
+http.listen(port, '192.168.1.29', () => {
     console.log('listening on *:3000');
 });
 
@@ -85,7 +85,7 @@ app.post("/start", async (req, res) => {
                 cname: req.body.channel,
                 uid: `${req.body.uid}`,
                 clientRequest: {
-                    token:token,
+                    token: token,
                     recordingConfig: {
                         maxIdleTime: 30,
                         streamTypes: 2,
@@ -101,7 +101,7 @@ app.post("/start", async (req, res) => {
                         },
                     },
                     recordingFileConfig: {
-                        avFileType: ["hls","mp4"]
+                        avFileType: ["hls", "mp4"]
                     },
                     subscribeUidGroup: 0,
                     storageConfig: {
@@ -114,11 +114,11 @@ app.post("/start", async (req, res) => {
                     },
                 },
             },
-            { headers: { Authorization ,"Content-Type": "application/json"} }
+            {headers: {Authorization, "Content-Type": "application/json"}}
         );
 
         res.json(start.data);
-    }catch (e){
+    } catch (e) {
         res.json(e)
     }
 });
@@ -139,10 +139,10 @@ app.post("/stop", async (req, res) => {
                 uid: `${req.body.uid}`,
                 clientRequest: {},
             },
-            { headers: { Authorization ,"Content-Type": "application/json"} }
+            {headers: {Authorization, "Content-Type": "application/json"}}
         );
         res.send(stop.data);
-    }catch (e) {
+    } catch (e) {
         res.json(e)
     }
 
@@ -242,6 +242,22 @@ io.on('connection', (socket) => {
         io.sockets.in("gimat_market_join_" + parseInt(data.market_id)).emit('gimat_one_market_receive_data', data);
         console.log('message data sent to market:', parseInt(data.market_id));
     });
+
+    /////////// live session ////////////
+    socket.on('join_channel', (channel) => {
+        socket.join("session_channel_" + channel);
+        console.log(`Joined channel: ${channel}`);
+    });
+
+    socket.on('end_session_provider', (channel) => {
+        io.sockets.in("session_channel_" + channel).emit('end_session');
+        console.log('session ended', channel);
+    });
+    socket.on('session_timed_provider', (channel) => {
+        io.sockets.in("session_channel_" + channel).emit('end_time_session');
+        console.log('session ended', channel);
+    });
+
 
     //Disconnect
     socket.on('disconnect', () => {

@@ -44,7 +44,7 @@ app.get('/', function (req, res) {
     });
 });
 
-http.listen(port,/* '192.168.1.29'*/, () => {
+http.listen(port, /*'192.168.1.29',*/ () => {
     console.log('listening on *:3000');
 });
 
